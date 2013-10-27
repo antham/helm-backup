@@ -51,4 +51,12 @@
     )
   )
 
+(defun copy-file-to-repository (filename)
+  "Create folder in repository and copy file in it"
+  (let ((directory (concat helm-backup-path (file-name-directory filename))))
+    (make-directory directory t)
+    (copy-file filename directory t t t)
+    )
+  )
+
 (provide 'helm-backup)
