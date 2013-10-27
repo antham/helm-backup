@@ -59,4 +59,15 @@
     )
   )
 
+(defun version-file (filename)
+  "Version file in backup repository"
+  (let ((absolute-filename (file-truename filename)))
+    (when (file-exists-p absolute-filename)
+      (copy-file-to-repository absolute-filename)
+      (exec-git-command (list "add" (substring absolute-filename 1)))
+      (exec-git-command '("commit" "--allow-empty-message" "-m" "''"))
+      )
+    )
+  )
+
 (provide 'helm-backup)
