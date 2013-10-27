@@ -17,3 +17,22 @@
 
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+(require 'cl)
+(require 'helm)
+(require 'helm-utils)
+
+(defgroup helm-backup nil
+  "Backup system using helm."
+  :group 'helm)
+
+(defcustom helm-backup-path "~/.helm-backup"
+  "Default path to save backup"
+  :group 'helm-backup
+  :type 'string)
+
+(defcustom helm-backup-git-binary "/usr/bin/git"
+  "Git binary path"
+  :group 'helm-backup
+  :type 'string)
+(provide 'helm-backup)
