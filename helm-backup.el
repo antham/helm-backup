@@ -43,4 +43,12 @@
     )
   )
 
+(defun exec-git-command (command)
+  "Execute a git command inside backup repository"
+  (when (file-directory-p (concat helm-backup-path "/.git"))
+    (type-of helm-backup-path)
+    (shell-command (combine-and-quote-strings (append (list "cd" helm-backup-path "&&" "git") command)))
+    )
+  )
+
 (provide 'helm-backup)
