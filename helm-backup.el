@@ -35,4 +35,12 @@
   "Git binary path"
   :group 'helm-backup
   :type 'string)
+
+(defun init-git-repository ()
+  "Initialize git repository"
+  (unless (file-directory-p helm-backup-path)
+    (call-process-shell-command helm-backup-git-binary nil nil nil "init" helm-backup-path)
+    )
+  )
+
 (provide 'helm-backup)
