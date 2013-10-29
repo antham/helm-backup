@@ -41,14 +41,14 @@
   :group 'helm-backup
   :type 'string)
 
-(defun init-git-repository ()
+(defun helm-backup-init-git-repository ()
   "Initialize git repository"
   (unless (file-directory-p helm-backup-path)
     (call-process-shell-command helm-backup-git-binary nil nil nil "init" helm-backup-path)
     )
   )
 
-(defun exec-git-command (command)
+(defun helm-backup-exec-git-command (command)
   "Execute a git command inside backup repository"
   (when (file-directory-p (concat helm-backup-path "/.git"))
     (type-of helm-backup-path)
@@ -56,7 +56,7 @@
     )
   )
 
-(defun copy-file-to-repository (filename)
+(defun helm-backup-copy-file-to-repository (filename)
   "Create folder in repository and copy file in it"
   (let ((directory (concat helm-backup-path (file-name-directory filename))))
     (make-directory directory t)
@@ -64,24 +64,24 @@
     )
   )
 
-(defun version-file (filename)
+(defun helm-backup-version-file (filename)
   "Version file in backup repository"
   (let ((absolute-filename (file-truename filename)))
     (when (file-exists-p absolute-filename)
-      (init-git-repository)
-      (copy-file-to-repository absolute-filename)
-      (exec-git-command (list "add" (substring absolute-filename 1)))
-      (exec-git-command '("commit" "--allow-empty-message" "-m" "''"))
+      (helm-backup-init-git-repository)
+      (helm-backup-copy-file-to-repository absolute-filename)
+      (helm-backup-exec-git-command (list "add" (substring absolute-filename 1)))
+      (helm-backup-exec-git-command '("commit" "--allow-empty-message" "-m" "''"))
       )
     )
   )
 
-(defun list-file-change-time (filename)
+(defun helm-backup-list-file-change-time (filename)
   "Build assoc list using commit id and message rendering format"
   (mapcar*
    'cons
-   (split-string (exec-git-command (list "log" (format "--pretty=format:%s" helm-backup-git-log-format) (substring filename 1))) "\n")
-   (split-string (exec-git-command (list "log" "--pretty=format:%h" (substring filename 1))) "\n")
+   (split-string (helm-backup-exec-git-command (list "log" (format "--pretty=format:%s" helm-backup-git-log-format) (substring filename 1))) "\n")
+   (split-string (helm-backup-exec-git-command (list "log" "--pretty=format:%h" (substring filename 1))) "\n")
    )
   )
 (provide 'helm-backup)
