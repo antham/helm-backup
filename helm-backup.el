@@ -36,6 +36,11 @@
   :group 'helm-backup
   :type 'string)
 
+(defcustom helm-backup-git-log-format "%cd, %ar"
+  "Format use to display entries in helm buffer"
+  :group 'helm-backup
+  :type 'string)
+
 (defun init-git-repository ()
   "Initialize git repository"
   (unless (file-directory-p helm-backup-path)
@@ -70,4 +75,12 @@
     )
   )
 
+(defun list-file-change-time (filename)
+  "Build assoc list using commit id and message rendering format"
+  (mapcar*
+   'cons
+   (split-string (exec-git-command (list "log" (format "--pretty=format:%s" helm-backup-git-log-format) (substring filename 1))) "\n")
+   (split-string (exec-git-command (list "log" "--pretty=format:%h" (substring filename 1))) "\n")
+   )
+  )
 (provide 'helm-backup)
