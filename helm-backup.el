@@ -53,6 +53,10 @@
   (when (file-directory-p (concat helm-backup-path "/.git"))
     (type-of helm-backup-path)
     (shell-command-to-string (combine-and-quote-strings (append (list "cd" helm-backup-path "&&" "git") command)))
+
+(defun helm-backup-transform-filename-for-git (filename)
+  (when (string= (substring filename 0 1) "/")
+    (substring filename 1)
     )
   )
 
@@ -70,7 +74,7 @@
     (when (file-exists-p absolute-filename)
       (helm-backup-init-git-repository)
       (helm-backup-copy-file-to-repository absolute-filename)
-      (helm-backup-exec-git-command (list "add" (substring absolute-filename 1)))
+      (helm-backup-exec-git-command (list "add" (helm-backup-transform-filename-for-git filename)))
       (helm-backup-exec-git-command '("commit" "--allow-empty-message" "-m" "''"))
       )
     )
@@ -78,10 +82,15 @@
 
 (defun helm-backup-list-file-change-time (filename)
   "Build assoc list using commit id and message rendering format"
-  (mapcar*
-   'cons
-   (split-string (helm-backup-exec-git-command (list "log" (format "--pretty=format:%s" helm-backup-git-log-format) (substring filename 1))) "\n")
-   (split-string (helm-backup-exec-git-command (list "log" "--pretty=format:%h" (substring filename 1))) "\n")
-   )
+  (let ((filename-for-git (helm-backup-transform-filename-for-git filename)))
+    (when (string= (helm-backup-exec-git-command (list "ls-files" filename-for-git)) filename-for-git)
+      (mapcar*
+       'cons
+       (split-string (helm-backup-exec-git-command (list "log" (format "--pretty=format:%s" helm-backup-git-log-format) filename-for-git)) "\n")
+       (split-string (helm-backup-exec-git-command (list "log" "--pretty=format:%h" filename-for-git)) "\n")
+       )
+      )
+    )
+  )
   )
 (provide 'helm-backup)
