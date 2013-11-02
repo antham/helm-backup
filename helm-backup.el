@@ -56,10 +56,15 @@
   )
 
 (defun helm-backup-transform-filename-for-git (filename)
-  (when (string= (substring filename 0 1) "/")
+  (when (and filename (helm-backup-is-absolute-filename filename))
     (substring filename 1)
     )
   )
+
+(defun helm-backup-is-absolute-filename (filename)
+  (when (and filename (string= (substring filename 0 1) "/"))
+    t)
+)
 
 (defun helm-backup-copy-file-to-repository (filename)
   "Create folder in repository and copy file in it"
@@ -71,20 +76,19 @@
 
 (defun helm-backup-version-file (filename)
   "Version file in backup repository"
-  (let ((absolute-filename (file-truename filename)))
-    (when (file-exists-p absolute-filename)
-      (helm-backup-init-git-repository)
-      (helm-backup-copy-file-to-repository absolute-filename)
-      (helm-backup-exec-git-command (list "add" (helm-backup-transform-filename-for-git filename)))
-      (helm-backup-exec-git-command '("commit" "--allow-empty-message" "-m" "''"))
-      )
+  (when (and filename (helm-backup-is-absolute-filename filename) (file-exists-p filename))
+    (helm-backup-init-git-repository)
+    (helm-backup-copy-file-to-repository filename)
+    (helm-backup-exec-git-command (list "add" (helm-backup-transform-filename-for-git filename)))
+    (helm-backup-exec-git-command '("commit" "--allow-empty-message" "-m" "''"))
+    t
     )
   )
 
 (defun helm-backup-list-file-change-time (filename)
   "Build assoc list using commit id and message rendering format"
   (let ((filename-for-git (helm-backup-transform-filename-for-git filename)))
-    (when (string= (helm-backup-exec-git-command (list "ls-files" filename-for-git)) filename-for-git)
+    (when (and filename (string= (helm-backup-exec-git-command (list "ls-files" filename-for-git)) filename-for-git))
       (mapcar*
        'cons
        (split-string (helm-backup-exec-git-command (list "log" (format "--pretty=format:%s" helm-backup-git-log-format) filename-for-git)) "\n")

@@ -57,10 +57,27 @@
 
 
 (ert-deftest helm-backup-transform-filename-for-git-test ()
-  (test-wrapper 
+  (test-wrapper
    (lambda ()
+     ;; nil filename
+     (should (eql (helm-backup-transform-filename-for-git nil) nil))
+     ;; relative filename
      (should (eql (helm-backup-transform-filename-for-git "relative/path") nil))
+     ;; absolute filename
      (should (equal-including-properties (helm-backup-transform-filename-for-git "/absolute/path") "absolute/path"))
+     )
+   )
+  )
+
+(ert-deftest helm-backup-is-absolute-filename-test ()
+  (test-wrapper
+   (lambda ()
+     ;; nil filename
+     (should (eql (helm-backup-is-absolute-filename nil) nil))
+     ;; relative filename
+     (should (eql (helm-backup-is-absolute-filename "relative/path") nil))
+     ;; absolute filename
+     (should (equal-including-properties (helm-backup-is-absolute-filename "/absolute/path") t))
      )
    )
   )
@@ -95,20 +112,20 @@
      (shell-command (combine-and-quote-strings (list "git" "init" helm-backup-path)))
      ;; version file
      (write-region "" nil "/tmp/fake-file")
-     (helm-backup-version-file "/tmp/fake-file")
+     (should (eql (helm-backup-version-file "/tmp/fake-file") t))
      (should (eql (file-exists-p (concat helm-backup-path "/tmp/fake-file")) t))
      (should (equal-including-properties (shell-command (combine-and-quote-strings (list "cd" helm-backup-path "&&" "git" "status" "-s"))) 0))
      ;; version file with relative path
      (write-region "" nil "/tmp/fake-file-1")
-     (helm-backup-version-file "tmp/fake-file-1")
+     (should (eql (helm-backup-version-file "tmp/fake-file-1") nil))
      (should (eql (file-exists-p (concat helm-backup-path "/tmp/fake-file")) t))
      (should (equal-including-properties (shell-command (combine-and-quote-strings (list "cd" helm-backup-path "&&" "git" "status" "-s"))) 0))
      ;; version non existing file
-     (helm-backup-version-file "/tmp/fake-fake-fake-fake")
+     (should (eql (helm-backup-version-file "/tmp/fake-fake-fake-fake") nil))
      (should-not (eql (file-exists-p (concat helm-backup-path "/tmp/fake-fake-fake-fake")) t))
      ;; version crap
-     (helm-backup-version-file "fake-fake-fake")
-     (should-not (eql (file-exists-p (concat helm-backup-path "/tmp/fake-fake-fake-fake")) t))
+     (should (eql (helm-backup-version-file "fake-fake-fake") nil))
+     (should (eql (file-exists-p (concat helm-backup-path "/tmp/fake-fake-fake-fake")) nil))
      )
    )
   )
@@ -116,6 +133,8 @@
 (ert-deftest helm-backup-list-file-change-time-test ()
   (test-wrapper 
    (lambda ()
+     ;; nil value
+     (should (eq (helm-backup-list-file-change-time nil) nil))
      ;; non existing repository
      (should (eq (helm-backup-list-file-change-time "/fake-file") nil))
      ;; add several modifications to a file
