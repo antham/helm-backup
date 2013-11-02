@@ -51,8 +51,9 @@
 (defun helm-backup-exec-git-command (command)
   "Execute a git command inside backup repository"
   (when (file-directory-p (concat helm-backup-path "/.git"))
-    (type-of helm-backup-path)
-    (shell-command-to-string (combine-and-quote-strings (append (list "cd" helm-backup-path "&&" "git") command)))
+    (replace-regexp-in-string "[\r\n|\n]$" "" (shell-command-to-string (combine-and-quote-strings (append (list "cd" helm-backup-path "&&" "git") command))))
+    )
+  )
 
 (defun helm-backup-transform-filename-for-git (filename)
   (when (string= (substring filename 0 1) "/")
