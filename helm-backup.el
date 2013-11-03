@@ -97,5 +97,14 @@
       )
     )
   )
+
+(defun helm-backup-fetch-backup-file (commit-id filename)
+  "Retrieve content file from backup repository"
+  (let ((filename-for-git (helm-backup-transform-filename-for-git filename)))
+    (when (and commit-id filename (not (string= (helm-backup-exec-git-command (list "log" "--ignore-missing" "-1" commit-id "--" filename-for-git)) "")))
+      (helm-backup-exec-git-command (list "show" (concat commit-id ":" filename-for-git)))
+      )
+    )
+  )
   )
 (provide 'helm-backup)

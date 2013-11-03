@@ -155,3 +155,23 @@
      )
    )
   )
+
+(ert-deftest helm-backup-fetch-backup-file-test ()
+  (test-wrapper
+   (lambda ()
+     (shell-command (combine-and-quote-strings (list "git" "init" helm-backup-path)))
+     (write-region "data" nil (concat helm-backup-path "/fake-file"))
+     (shell-command (combine-and-quote-strings (list "cd" helm-backup-path "&&" "git" "add" "fake-file" "&&" "git" "commit" "--allow-empty-message" "-m" "''")))
+     (let ((commit-id (car (split-string (shell-command-to-string (combine-and-quote-strings (list "cd" helm-backup-path "&&" "git" "log" "-1" "--oneline"))) " "))))
+        ;; nil value
+        (should (eql (helm-backup-fetch-backup-file nil nil) nil))
+        ;; wrong id
+        (should (eql (helm-backup-fetch-backup-file "9090909" "/fake-file") nil))
+        ;; wrong file
+        (should (eql (helm-backup-fetch-backup-file commit-id "/non-existing-file") nil))
+        ;; existing commit and file
+        (should (equal-including-properties (helm-backup-fetch-backup-file commit-id "/fake-file") "data"))
+        )
+     )
+   )
+  )
