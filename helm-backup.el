@@ -21,6 +21,7 @@
 (require 'cl)
 (require 'helm)
 (require 'helm-utils)
+(require 's)
 
 (defgroup helm-backup nil
   "Backup system using helm."
@@ -48,10 +49,15 @@
     )
   )
 
-(defun helm-backup-exec-git-command (command)
+(defun helm-backup-exec-git-command (command &optional strip-last-newline)
   "Execute a git command inside backup repository"
   (when (file-directory-p (concat helm-backup-path "/.git"))
-    (replace-regexp-in-string "[\r\n|\n]$" "" (shell-command-to-string (combine-and-quote-strings (append (list "cd" helm-backup-path "&&" "git") command))))
+    (let ((output (shell-command-to-string (combine-and-quote-strings (append (list "cd" helm-backup-path "&&" "git") command)))))
+      (if strip-last-newline
+          (s-chomp output)
+        output
+        )
+      )
     )
   )
 
@@ -64,7 +70,7 @@
 (defun helm-backup-is-absolute-filename (filename)
   (when (and filename (string= (substring filename 0 1) "/"))
     t)
-)
+  )
 
 (defun helm-backup-copy-file-to-repository (filename)
   "Create folder in repository and copy file in it"
@@ -79,8 +85,8 @@
   (when (and filename (helm-backup-is-absolute-filename filename) (file-exists-p filename))
     (helm-backup-init-git-repository)
     (helm-backup-copy-file-to-repository filename)
-    (helm-backup-exec-git-command (list "add" (helm-backup-transform-filename-for-git filename)))
-    (helm-backup-exec-git-command '("commit" "--allow-empty-message" "-m" "''"))
+    (helm-backup-exec-git-command (list "add" (helm-backup-transform-filename-for-git filename)) t)
+    (helm-backup-exec-git-command '("commit" "--allow-empty-message" "-m" "''") t)
     t
     )
   )
@@ -88,11 +94,11 @@
 (defun helm-backup-list-file-change-time (filename)
   "Build assoc list using commit id and message rendering format"
   (let ((filename-for-git (helm-backup-transform-filename-for-git filename)))
-    (when (and filename (string= (helm-backup-exec-git-command (list "ls-files" filename-for-git)) filename-for-git))
+    (when (and filename (string= (helm-backup-exec-git-command (list "ls-files" filename-for-git) t) filename-for-git) t)
       (mapcar*
        'cons
-       (split-string (helm-backup-exec-git-command (list "log" (format "--pretty=format:%s" helm-backup-git-log-format) filename-for-git)) "\n")
-       (split-string (helm-backup-exec-git-command (list "log" "--pretty=format:%h" filename-for-git)) "\n")
+       (split-string (helm-backup-exec-git-command (list "log" (format "--pretty=format:%s" helm-backup-git-log-format) filename-for-git) t) "\n")
+       (split-string (helm-backup-exec-git-command (list "log" "--pretty=format:%h" filename-for-git) t) "\n")
        )
       )
     )
@@ -101,7 +107,7 @@
 (defun helm-backup-fetch-backup-file (commit-id filename)
   "Retrieve content file from backup repository"
   (let ((filename-for-git (helm-backup-transform-filename-for-git filename)))
-    (when (and commit-id filename (not (string= (helm-backup-exec-git-command (list "log" "--ignore-missing" "-1" commit-id "--" filename-for-git)) "")))
+    (when (and commit-id filename (not (string= (helm-backup-exec-git-command (list "log" "--ignore-missing" "-1" commit-id "--" filename-for-git) t) "")))
       (helm-backup-exec-git-command (list "show" (concat commit-id ":" filename-for-git)))
       )
     )
