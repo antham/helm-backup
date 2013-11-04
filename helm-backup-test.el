@@ -87,7 +87,7 @@
    (lambda ()
      ;; we can do any git command in backup repository
      (shell-command (combine-and-quote-strings (list "git" "init" helm-backup-path)))
-     (write-region "" nil (concat helm-backup-path "/test"))
+     (write-region "" nil (concat helm-backup-path "/test") nil 'nomessage)
      (helm-backup-exec-git-command (list "add" "test"))
      (should (equal-including-properties (helm-backup-exec-git-command (list "status" "-s")) "A  test\n"))
      (should (equal-including-properties (helm-backup-exec-git-command (list "status" "-s") t) "A  test"))
@@ -100,7 +100,7 @@
    (lambda ()
      ;; copy a file to backup repository recreating tree
      (shell-command (combine-and-quote-strings (list "git" "init" helm-backup-path)))
-     (write-region "" nil "/tmp/fake-file")
+     (write-region "" nil "/tmp/fake-file" nil 'nomessage)
      (helm-backup-copy-file-to-repository "/tmp/fake-file")
      (should (eql (file-exists-p (concat helm-backup-path "/tmp/fake-file")) t))
      )
@@ -112,15 +112,15 @@
    (lambda ()
      (shell-command (combine-and-quote-strings (list "git" "init" helm-backup-path)))
      ;; version file
-     (write-region "" nil "/tmp/fake-file")
+     (write-region "" nil "/tmp/fake-file" nil 'nomessage)
      (should (eql (helm-backup-version-file "/tmp/fake-file") t))
      (should (eql (file-exists-p (concat helm-backup-path "/tmp/fake-file")) t))
-     (should (equal-including-properties (shell-command (combine-and-quote-strings (list "cd" helm-backup-path "&&" "git" "status" "-s"))) 0))
+     (should (equal-including-properties (shell-command-to-string (combine-and-quote-strings (list "cd" helm-backup-path "&&" "git" "status" "-s"))) ""))
      ;; version file with relative path
-     (write-region "" nil "/tmp/fake-file-1")
+     (write-region "" nil "/tmp/fake-file-1" nil 'nomessage)
      (should (eql (helm-backup-version-file "tmp/fake-file-1") nil))
      (should (eql (file-exists-p (concat helm-backup-path "/tmp/fake-file")) t))
-     (should (equal-including-properties (shell-command (combine-and-quote-strings (list "cd" helm-backup-path "&&" "git" "status" "-s"))) 0))
+     (should (equal-including-properties (shell-command-to-string (combine-and-quote-strings (list "cd" helm-backup-path "&&" "git" "status" "-s"))) ""))
      ;; version non existing file
      (should (eql (helm-backup-version-file "/tmp/fake-fake-fake-fake") nil))
      (should-not (eql (file-exists-p (concat helm-backup-path "/tmp/fake-fake-fake-fake")) t))
@@ -143,11 +143,11 @@
      ;; non existing file in repository
      (should (eq (helm-backup-list-file-change-time "/fake-file") nil))
      ;; add a file, change and version it several time
-     (write-region "" nil (concat helm-backup-path "/fake-file"))
+     (write-region "" nil (concat helm-backup-path "/fake-file") nil 'nomessage)
      (shell-command (combine-and-quote-strings (list "cd" helm-backup-path "&&" "git" "add" "fake-file" "&&" "git" "commit" "--allow-empty-message" "-m" "''")))
-     (write-region "data" nil (concat helm-backup-path "/fake-file"))
+     (write-region "data" nil (concat helm-backup-path "/fake-file") nil 'nomessage)
      (shell-command (combine-and-quote-strings (list "cd" helm-backup-path "&&" "git" "add" "fake-file" "&&" "git" "commit" "--allow-empty-message" "-m" "''")))
-     (write-region "data data" nil (concat helm-backup-path "/fake-file"))
+     (write-region "data data" nil (concat helm-backup-path "/fake-file") nil 'nomessage)
      (shell-command (combine-and-quote-strings (list "cd" helm-backup-path "&&" "git" "add" "fake-file" "&&" "git" "commit" "--allow-empty-message" "-m" "''")))
      (should (eq (safe-length (helm-backup-list-file-change-time "/fake-file")) 3))
      (dolist (row (helm-backup-list-file-change-time "/fake-file"))
@@ -161,7 +161,7 @@
   (test-wrapper
    (lambda ()
      (shell-command (combine-and-quote-strings (list "git" "init" helm-backup-path)))
-     (write-region "data" nil (concat helm-backup-path "/fake-file"))
+     (write-region "data" nil (concat helm-backup-path "/fake-file") nil 'nomessage)
      (shell-command (combine-and-quote-strings (list "cd" helm-backup-path "&&" "git" "add" "fake-file" "&&" "git" "commit" "--allow-empty-message" "-m" "''")))
      (let ((commit-id (car (split-string (shell-command-to-string (combine-and-quote-strings (list "cd" helm-backup-path "&&" "git" "log" "-1" "--oneline"))) " "))))
         ;; nil value
