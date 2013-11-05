@@ -118,5 +118,55 @@
   (helm-backup-version-file (buffer-file-name))
   )
 
+(defun helm-backup-open-in-new-buffer (commit-id filename)
+  "Open backup in new buffer"
+  (let ((buffer-name (concat filename " | " (helm-backup-exec-git-command (list "diff-tree" "-s" "--pretty=format:%cd" commit-id) t)))
+        (mode (with-current-buffer (current-buffer) major-mode))
+        )
+    (set-buffer (generate-new-buffer buffer-name))
+    (insert (helm-backup-fetch-backup-file commit-id filename))
+    (switch-to-buffer buffer-name)
+    (funcall mode)
+    )
   )
+
+(defun helm-backup-replace-current-buffer (commit-id filename)
+  "Replace current buffer with backup"
+  (erase-buffer)
+  (insert (helm-backup-fetch-backup-file commit-id filename))
+  )
+
+;;;###autoload
+(defun helm-backup-source ()
+  "Source used to populate buffer"
+  `((name . ,((lambda ()
+                (format "Backup for %s" (buffer-file-name)))))
+    (candidates . ,((lambda ()
+                      (helm-backup-list-file-change-time (buffer-file-name)))))
+    (action
+     ("Open in new buffer" . (lambda (candidate)
+                               (helm-backup-open-in-new-buffer candidate (buffer-file-name))))
+     ("Replace current buffer" . (lambda (candidate)
+                                   (with-helm-current-buffer
+                                     (helm-backup-replace-current-buffer candidate (buffer-file-name)))))
+     )))
+
+;;;###autoload
+(defun helm-backup ()
+  "Main function used to call helm-backup"
+  (interactive)
+  (let ((helm-quit-if-no-candidate (lambda ()
+                                     (error "No filename associated with buffer or file has no backup yet")
+                                     )))
+    (helm-other-buffer (helm-backup-source) "*Helm Backup*")
+    )
+  )
+
 (provide 'helm-backup)
+
+;; Local Variables:
+;; coding: utf-8
+;; indent-tabs-mode: nil
+;; End:
+
+;;; helm-color.el ends here
