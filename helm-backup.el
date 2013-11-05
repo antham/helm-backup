@@ -61,12 +61,14 @@
   )
 
 (defun helm-backup-transform-filename-for-git (filename)
+  "Transform filename to be used in git repository"
   (when (and filename (helm-backup-is-absolute-filename filename))
     (substring filename 1)
     )
   )
 
 (defun helm-backup-is-absolute-filename (filename)
+  "Check if a filename is absolute or not"
   (when (and filename (string= (substring filename 0 1) "/"))
     t)
   )
