@@ -111,5 +111,12 @@
       )
     )
   )
+
+;;;###autoload
+(defun helm-backup-versioning ()
+  "Helper to add easily versionning"
+  (helm-backup-version-file (buffer-file-name))
+  )
+
   )
 (provide 'helm-backup)
