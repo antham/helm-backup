@@ -18,17 +18,6 @@
 language: emacs-lisp
 
 ###
-### defining the build matrix
-###
-### ===>                                                       <===
-### ===> each variation in env/matrix will be built and tested <===
-### ===>                                                       <===
-###
-### variables under env/global are available to the build process
-### but don't cause the creation of a separate variation
-###
-
-###
 ### limit build attempts to defined branches
 ###
 ### notes
@@ -52,6 +41,8 @@ language: emacs-lisp
 
 before_install:
   - git submodule --quiet update --init --recursive
+  - git config --global user.email "noemail@noemail.com"
+  - git config --global user.name "noname"
   - curl -fsSkL https://raw.github.com/cask/cask/master/go | python;
   - export PATH="${HOME}/.cask/bin:$PATH"
 
