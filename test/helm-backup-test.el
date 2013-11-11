@@ -144,11 +144,11 @@
      (should (eq (helm-backup-list-file-change-time "/fake-file") nil))
      ;; add a file, change and version it several time
      (write-region "" nil (concat backup-folder-test-repository "/fake-file") nil 'nomessage)
-     (shell-command (combine-and-quote-strings (list "cd" backup-folder-test-repository "&&" "git" "add" "fake-file" "&&" "git" "commit" "--allow-empty-message" "-m" "''")))
+     (shell-command (combine-and-quote-strings (list "cd" backup-folder-test-repository "&&" "git" "add" "fake-file" "&&" "git" "commit" "-m" "' '")))
      (write-region "data" nil (concat backup-folder-test-repository "/fake-file") nil 'nomessage)
-     (shell-command (combine-and-quote-strings (list "cd" backup-folder-test-repository "&&" "git" "add" "fake-file" "&&" "git" "commit" "--allow-empty-message" "-m" "''")))
+     (shell-command (combine-and-quote-strings (list "cd" backup-folder-test-repository "&&" "git" "add" "fake-file" "&&" "git" "commit" "-m" "' '")))
      (write-region "data data" nil (concat backup-folder-test-repository "/fake-file") nil 'nomessage)
-     (shell-command (combine-and-quote-strings (list "cd" backup-folder-test-repository "&&" "git" "add" "fake-file" "&&" "git" "commit" "--allow-empty-message" "-m" "''")))
+     (shell-command (combine-and-quote-strings (list "cd" backup-folder-test-repository "&&" "git" "add" "fake-file" "&&" "git" "commit" "-m" "' '")))
      (should (eq (safe-length (helm-backup-list-file-change-time "/fake-file")) 3))
      (dolist (row (helm-backup-list-file-change-time "/fake-file"))
        (should (eq (string-match "[0-9a-f]+" (cdr row)) 0))
@@ -162,7 +162,7 @@
    (lambda ()
      (shell-command (combine-and-quote-strings (list "git" "init" backup-folder-test-repository)))
      (write-region "data" nil (concat backup-folder-test-repository "/fake-file") nil 'nomessage)
-     (shell-command (combine-and-quote-strings (list "cd" backup-folder-test-repository "&&" "git" "add" "fake-file" "&&" "git" "commit" "--allow-empty-message" "-m" "''")))
+     (shell-command (combine-and-quote-strings (list "cd" backup-folder-test-repository "&&" "git" "add" "fake-file" "&&" "git" "commit" "-m" "' '")))
      (let ((commit-id (car (split-string (shell-command-to-string (combine-and-quote-strings (list "cd" backup-folder-test-repository "&&" "git" "log" "-1" "--oneline"))) " "))))
        ;; nil value
        (should (eql (helm-backup-fetch-backup-file nil nil) nil))

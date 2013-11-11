@@ -89,7 +89,7 @@
     (helm-backup-init-git-repository)
     (helm-backup-copy-file-to-repository filename)
     (helm-backup-exec-git-command (list "add" (helm-backup-transform-filename-for-git filename)) t)
-    (helm-backup-exec-git-command '("commit" "--allow-empty-message" "-m" "''") t)
+    (helm-backup-exec-git-command '("commit" "-m" "' '") t)
     t
     )
   )
