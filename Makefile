@@ -8,6 +8,7 @@ test: unit-tests
 
 unit-tests:
 	${CASK} exec ert-runner
+
 test-travis :
 	@if test -z "$$TRAVIS" && test -e $(TRAVIS_FILE); then travis-lint $(TRAVIS_FILE); fi
 
