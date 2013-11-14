@@ -2,8 +2,11 @@
 
 ;; Copyright (C) 2013 Anthony HAMON
 
-;; Author: Anthony HAMON
+;; Author: Anthony HAMON <hamon.anth@gmail.com>
 ;; URL: http://github.com/antham/helm-backup
+;; Version: 0.1.0
+;; Package-Requires: ((helm "1.5.5") (s "1.8.0"))
+;; Keywords: backup
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
