@@ -14,7 +14,11 @@ This project aims to create a backup system for emacs using both power of git to
 
 ### Install
 
-So you need to get sources and after that in your emacs config add :
+You can use melpa:
+
+  M-x package-install RET helm-backup
+
+or you can pull it from here and you have to add in your emacs config :
 
   ```elisp
   (add-to-list 'load-path "/path/to/helm-backup-directory")
@@ -28,7 +32,7 @@ If you want to store every change each time you save a file add :
   ```
 or 
 
-    M-x customize-variable > after-save-hook > [INS] helm-backup-versioning
+  M-x customize-variable RET after-save-hook RET [INS] helm-backup-versioning
 
 ### Usage
 

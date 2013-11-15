@@ -1,4 +1,4 @@
-;;; helm-backup.el --- Backup each files changes
+;;; helm-backup.el --- Backup each file change using git
 
 ;; Copyright (C) 2013 Anthony HAMON
 
@@ -20,6 +20,20 @@
 
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; To store change every time you save a file add :
+;; (add-hook 'after-save-hook 'helm-backup-versioning)
+;; or from emacs you can do :
+;; M-x customize-variable > after-save-hook > [INS] helm-backup-versioning
+
+;; To retrieve file backup, from buffer call `helm-backup' :
+;; M-x helm-backup
+;; for convenience you can define key binding as follow :
+;; (global-set-key (kbd "C-c b") 'helm-backup)
+
+;; Code:
 
 (require 'helm)
 (require 'helm-utils)
