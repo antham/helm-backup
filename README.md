@@ -16,34 +16,35 @@ This project aims to create a backup system for emacs using both power of git to
 
 You can use melpa:
 
-  M-x package-install RET helm-backup
+    M-x package-install RET helm-backup
 
 or you can pull it from here and you have to add in your emacs config :
 
-  ```elisp
-  (add-to-list 'load-path "/path/to/helm-backup-directory")
-  (require 'helm-backup)
-  ```
+```elisp
+(add-to-list 'load-path "/path/to/helm-backup-directory")
+(require 'helm-backup)
+```
 
 If you want to store every change each time you save a file add : 
 
-  ```elisp
-  (add-hook 'after-save-hook 'helm-backup-versioning)
-  ```
+```elisp
+(add-hook 'after-save-hook 'helm-backup-versioning)
+```
+
 or 
 
-  M-x customize-variable RET after-save-hook RET [INS] helm-backup-versioning
+    M-x customize-variable RET after-save-hook RET [INS] helm-backup-versioning
 
 ### Usage
 
 You can map `helm-backup` command to key to retrieve easily backup as follow :
 
-  ```elisp
-  (global-set-key (kbd "C-c b")   'helm-backup)
-  ```
+```elisp
+(global-set-key (kbd "C-c b")   'helm-backup)
+```
 
 After that, open a file, press `C-c b` and a list of backup will be displayed if any, you can choose to see backup in new buffer (default) or override current buffer with backup.
 
 ### Customize
 
-You can easily customize some stuffs through `M-x customize-group > helm-group`, like storage path for instance.
+You can easily customize some stuffs through `M-x customize-group RET helm-group`, like storage path for instance.
