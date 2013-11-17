@@ -33,6 +33,8 @@
 ;; for convenience you can define key binding as follow :
 ;; (global-set-key (kbd "C-c b") 'helm-backup)
 
+;;; Code:
+
 (require 'helm)
 (require 'helm-utils)
 (require 's)
