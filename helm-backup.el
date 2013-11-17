@@ -26,25 +26,23 @@
 ;; To store change every time you save a file add :
 ;; (add-hook 'after-save-hook 'helm-backup-versioning)
 ;; or from emacs you can do :
-;; M-x customize-variable > after-save-hook > [INS] helm-backup-versioning
+;; M-x customize-variable RET after-save-hook RET [INS] helm-backup-versioning
 
 ;; To retrieve file backup, from buffer call `helm-backup' :
 ;; M-x helm-backup
 ;; for convenience you can define key binding as follow :
 ;; (global-set-key (kbd "C-c b") 'helm-backup)
 
-;; Code:
-
 (require 'helm)
 (require 'helm-utils)
 (require 's)
 
 (defgroup helm-backup nil
-  "Backup system using helm."
+  "Backup system using git and helm."
   :group 'helm)
 
 (defcustom helm-backup-path "~/.helm-backup"
-  "Default path to save backup"
+  "Backup location"
   :group 'helm-backup
   :type 'string)
 
