@@ -86,7 +86,7 @@
   (test-wrapper 
    (lambda ()
      ;; we can do any git command in backup repository
-     (shell-command (combine-and-quote-strings (list "git" "init" backup-folder-test-repository)))
+     (call-process-shell-command helm-backup-git-binary nil nil nil "init" backup-folder-test-repository)
      (write-region "" nil (concat backup-folder-test-repository "/test") nil 'nomessage)
      (helm-backup-exec-git-command (list "add" "test"))
      (should (equal-including-properties (helm-backup-exec-git-command (list "status" "-s")) "A  test\n"))
@@ -99,7 +99,7 @@
   (test-wrapper 
    (lambda ()
      ;; copy a file to backup repository recreating tree
-     (shell-command (combine-and-quote-strings (list "git" "init" backup-folder-test-repository)))
+     (call-process-shell-command helm-backup-git-binary nil nil nil "init" backup-folder-test-repository)
      (write-region "" nil (concat backup-folder-test "/fake-file") nil 'nomessage)
      (helm-backup-copy-file-to-repository (concat backup-folder-test "/fake-file"))
      (should (eql (file-exists-p (concat backup-folder-test-repository (concat backup-folder-test "/fake-file"))) t))
@@ -110,7 +110,7 @@
 (ert-deftest helm-backup-version-file-test ()
   (test-wrapper 
    (lambda ()
-     (shell-command (combine-and-quote-strings (list "git" "init" backup-folder-test-repository)))
+     (call-process-shell-command helm-backup-git-binary nil nil nil "init" backup-folder-test-repository nil nil)
      ;; version file
      (write-region "" nil (concat backup-folder-test "/fake-file") nil 'nomessage)
      (should (eql (helm-backup-version-file (concat backup-folder-test "/fake-file")) t))
@@ -139,7 +139,7 @@
      ;; non existing repository
      (should (eq (helm-backup-list-file-change-time "/fake-file") nil))
      ;; add several modifications to a file
-     (shell-command (combine-and-quote-strings (list "git" "init" backup-folder-test-repository)))
+     (call-process-shell-command helm-backup-git-binary nil nil nil "init" backup-folder-test-repository)
      ;; non existing file in repository
      (should (eq (helm-backup-list-file-change-time "/fake-file") nil))
      ;; add a file, change and version it several time
@@ -160,7 +160,7 @@
 (ert-deftest helm-backup-fetch-backup-file-test ()
   (test-wrapper
    (lambda ()
-     (shell-command (combine-and-quote-strings (list "git" "init" backup-folder-test-repository)))
+     (call-process-shell-command helm-backup-git-binary nil nil nil "init" backup-folder-test-repository)
      (write-region "data" nil (concat backup-folder-test-repository "/fake-file") nil 'nomessage)
      (shell-command (combine-and-quote-strings (list "cd" backup-folder-test-repository "&&" "git" "add" "fake-file" "&&" "git" "commit" "-m" "' '")))
      (let ((commit-id (car (split-string (shell-command-to-string (combine-and-quote-strings (list "cd" backup-folder-test-repository "&&" "git" "log" "-1" "--oneline"))) " "))))
