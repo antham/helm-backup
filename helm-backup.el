@@ -58,6 +58,15 @@
   :group 'helm-backup
   :type 'string)
 
+(defcustom helm-backup-excluded-entries nil
+  "Define a list of file/folder regexp to exclude from backup
+/home/user/password => exclude password in /home/user
+.*\\.el$ => exclude .el extension
+/root/.* => exclude everything inside root
+.*/password/.* => exclude all folders with name 'password'"
+  :group 'helm-backup
+  :type '(repeat regexp))
+
 (defun helm-backup-init-git-repository ()
   "Initialize git repository"
   (unless (file-directory-p helm-backup-path)
@@ -100,9 +109,26 @@
     )
   )
 
+(defun helm-backup-is-excluded-filename (filename)
+  "Check if a filename is excluded from backup"
+  (when filename
+    (dolist (regexp helm-backup-excluded-entries)
+      (let ((index (string-match (concat "^" regexp "$") filename)))
+        (when (and (integerp index)(zerop index))
+          (return t)
+          )
+        )
+      )
+    )
+  )
+
 (defun helm-backup-version-file (filename)
   "Version file in backup repository"
-  (when (and filename (helm-backup-is-absolute-filename filename) (file-exists-p filename))
+  (when (and filename
+             (helm-backup-is-absolute-filename filename)
+             (file-exists-p filename)
+             (not (helm-backup-is-excluded-filename filename))
+             )
     (helm-backup-init-git-repository)
     (helm-backup-copy-file-to-repository filename)
     (helm-backup-exec-git-command (list "add" (helm-backup-transform-filename-for-git filename)) t)
@@ -177,7 +203,7 @@
   "Main function used to call helm-backup"
   (interactive)
   (let ((helm-quit-if-no-candidate (lambda ()
-                                     (error "No filename associated with buffer or file has no backup yet")
+                                     (error "No filename associated with buffer, file has no backup yet or filename is blacklisted")
                                      )))
     (helm-other-buffer (helm-backup-source) "*Helm Backup*")
     )

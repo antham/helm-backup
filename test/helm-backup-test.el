@@ -176,3 +176,42 @@
      )
    )
   )
+
+(ert-deftest helm-backup-is-excluded-filename-test ()
+  (test-wrapper
+   (lambda ()
+     (let ((excluded-entries helm-backup-excluded-entries))
+       (unwind-protect
+           (progn
+             ;; no patterns
+             (should (eql (helm-backup-is-excluded-filename (concat backup-folder-test "/password")) nil))
+             (setq helm-backup-excluded-entries (list "/password" "/password\[0-9\]+""/root/.*" ".*\.text" ".*/pgp/.*"))
+             ;; excluded file
+             (should (eql (helm-backup-is-excluded-filename "/password") t))
+             (should (eql (helm-backup-is-excluded-filename "/password1") t))
+             ;; file inside excluded folder
+             (should (eql (helm-backup-is-excluded-filename "/root/file") t))
+             ;; file at the second level in excluded folder
+             (should (eql (helm-backup-is-excluded-filename "/root/folder/file2") t))
+             ;; file inside global excluded folder
+             (should (eql (helm-backup-is-excluded-filename "/home/user/pgp/key") t))
+             (should (eql (helm-backup-is-excluded-filename "/home/admin/pgp/key") t))
+             (should (eql (helm-backup-is-excluded-filename "/pgp/key") t))
+             ;; excluded extension
+             (should (eql (helm-backup-is-excluded-filename "/file.text") t))
+             (should (eql (helm-backup-is-excluded-filename "/home/user/file.text") t))
+             (should (eql (helm-backup-is-excluded-filename "/home/user/file.text") t))
+             ;; allowed file
+             (should (eql (helm-backup-is-excluded-filename "/file") nil))
+             (should (eql (helm-backup-is-excluded-filename "/password-public") nil))
+             ;; allowed folder
+             (should (eql (helm-backup-is-excluded-filename "/home/user/file") nil))
+             ;; allowed extension
+             (should (eql (helm-backup-is-excluded-filename "/home/user/file.el") nil))
+             )
+         (setq helm-backup-excluded-entries excluded-entries)
+         )
+       )
+     )
+   )
+  )
