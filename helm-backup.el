@@ -53,8 +53,8 @@
   :group 'helm-backup
   :type 'string)
 
-(defcustom helm-backup-git-log-format "%cd, %ar"
-  "Format use to display entries in helm buffer"
+(defcustom helm-backup-list-format "%cd, %ar"
+  "Format use to display entries in helm buffer, follow git log format"
   :group 'helm-backup
   :type 'string)
 
@@ -117,7 +117,7 @@
     (when (and filename (string= (helm-backup-exec-git-command (list "ls-files" filename-for-git) t) filename-for-git) t)
       (mapcar*
        'cons
-       (split-string (helm-backup-exec-git-command (list "log" (format "--pretty=format:%s" helm-backup-git-log-format) filename-for-git) t) "\n")
+       (split-string (helm-backup-exec-git-command (list "log" (format "--pretty=format:%s" helm-backup-list-format) filename-for-git) t) "\n")
        (split-string (helm-backup-exec-git-command (list "log" "--pretty=format:%h" filename-for-git) t) "\n")
        )
       )
