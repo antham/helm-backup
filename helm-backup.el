@@ -159,6 +159,24 @@
     )
   )
 
+(defun helm-backup-create-backup-buffer (commit-id filename)
+  "Create a buffer using chosen backup"
+  (let ((data (helm-backup-fetch-backup-file commit-id filename)))
+    (when data
+      (let ((buffer (get-buffer-create (concat filename " | " (helm-backup-exec-git-command (list "diff-tree" "-s" "--pretty=format:%cd" commit-id) t))))
+            (mode (with-current-buffer (current-buffer) major-mode))
+            )
+        (with-current-buffer buffer
+          (erase-buffer)
+          (insert data)
+          (funcall mode)
+          buffer
+          )
+        )
+      )
+    )
+  )
+
 ;;;###autoload
 (defun helm-backup-versioning ()
   "Helper to add easily versionning"
@@ -167,13 +185,8 @@
 
 (defun helm-backup-open-in-new-buffer (commit-id filename)
   "Open backup in new buffer"
-  (let ((buffer-name (concat filename " | " (helm-backup-exec-git-command (list "diff-tree" "-s" "--pretty=format:%cd" commit-id) t)))
-        (mode (with-current-buffer (current-buffer) major-mode))
-        )
-    (set-buffer (generate-new-buffer buffer-name))
-    (insert (helm-backup-fetch-backup-file commit-id filename))
-    (switch-to-buffer buffer-name)
-    (funcall mode)
+  (let ((backup-buffer (helm-backup-create-backup-buffer commit-id filename)))
+    (switch-to-buffer backup-buffer)
     )
   )
 
@@ -181,6 +194,13 @@
   "Replace current buffer with backup"
   (erase-buffer)
   (insert (helm-backup-fetch-backup-file commit-id filename))
+  )
+
+(defun helm-backup-create-ediff (commit-id buffer)
+  "Create a ediff buffer with backup"
+  (let ((backup-buffer (helm-backup-create-backup-buffer commit-id (buffer-file-name buffer))))
+    (ediff-buffers (buffer-name backup-buffer) (buffer-name buffer))
+    )
   )
 
 ;;;###autoload
@@ -191,6 +211,8 @@
     (candidates . ,((lambda ()
                       (helm-backup-list-file-change-time (buffer-file-name)))))
     (action
+     ("Ediff file with backup" . (lambda (candidate)
+                                   (helm-backup-create-ediff candidate (current-buffer))))
      ("Open in new buffer" . (lambda (candidate)
                                (helm-backup-open-in-new-buffer candidate (buffer-file-name))))
      ("Replace current buffer" . (lambda (candidate)

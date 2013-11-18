@@ -215,3 +215,29 @@
      )
    )
   )
+
+(ert-deftest helm-backup-create-backup-buffer ()
+  (test-wrapper
+   (lambda ()
+     (call-process-shell-command helm-backup-git-binary nil nil nil "init" backup-folder-test-repository)
+     (write-region "data" nil (concat backup-folder-test-repository "/fake-file") nil 'nomessage)
+     (shell-command (combine-and-quote-strings (list "cd" backup-folder-test-repository "&&" helm-backup-git-binary "add" "fake-file" "&&" helm-backup-git-binary "commit" "-m" "' '")))
+
+     (let* ((commit-id (car (split-string (shell-command-to-string (combine-and-quote-strings (list "cd" backup-folder-test-repository "&&" helm-backup-git-binary "log" "-1" "--oneline"))) " ")))
+           (buffer (helm-backup-create-backup-buffer commit-id "/fake-file"))
+           (data nil)
+           )
+       ;; nil value
+       (should (eql (helm-backup-create-backup-buffer nil nil) nil))
+       ;; wrong id
+       (should (eql (helm-backup-create-backup-buffer "9090909" "/fake-file") nil))
+       ;; wrong file
+       (should (eql (helm-backup-create-backup-buffer commit-id "/non-existing-file") nil))
+       ;; existing commit and file
+       (with-current-buffer buffer
+         (should (equal-including-properties (buffer-substring (point-min) (point-max)) "data"))
+         )
+       )
+     )
+   )
+  )
