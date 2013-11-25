@@ -4,11 +4,15 @@ EMACS_BATCH=$(EMACS_CLEAN) --batch
 CASK=cask
 PKG_DIR := $(shell ${CASK} package-directory)
 
-test: unit-tests
+test: unit-tests integration-tests
 
 unit-tests:
-	@echo "-- Running unit-test --"
+	@echo "-- Running unit-tests --"
 	${CASK} exec ert-runner
+
+integration-tests:
+	@echo "-- Running integration tests --"
+	${CASK} exec ecukes
 
 test-travis :
 	@echo "-- Testing travis.yml --"
