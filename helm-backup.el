@@ -37,6 +37,7 @@
 
 (require 'helm)
 (require 'helm-utils)
+(require 'cl)
 (require 's)
 
 (defgroup helm-backup nil
