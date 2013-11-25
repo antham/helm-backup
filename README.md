@@ -4,6 +4,13 @@ This project aims to create a backup system for emacs using both power of git to
 
 ![alt tag](http://antham.github.io/helm-backup/pictures/screenshot.png)
 
+## Features
+
+- Diff view to revert changes easily
+- Open backup in buffer or replace current one through helm
+- Exclude files/folders from backup
+- Customize storage path
+
 ## Getting started
 
 ### Dependencies
@@ -44,7 +51,3 @@ You can map `helm-backup` command to key to retrieve easily backup as follow :
 ```
 
 After that, open a file, press `C-c b` and a list of backup will be displayed if any, you can choose to see backup in new buffer (default) or override current buffer with backup.
-
-### Customize
-
-You can easily customize some stuffs through `M-x customize-group RET helm-group`, like storage path for instance.
