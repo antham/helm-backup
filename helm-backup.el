@@ -169,6 +169,10 @@
           (funcall mode)
           buffer)))))
 
+(defun helm-backup-clean-repository ()
+  "Clean repository running gc."
+  (helm-backup-exec-git-command (list "gc") t))
+
 ;;;###autoload
 (defun helm-backup-versioning ()
   "Helper to add easily versionning."
@@ -190,7 +194,6 @@
     (ediff-buffers (buffer-name backup-buffer)
                    (buffer-name buffer))))
 
-;;;###autoload
 (defun helm-backup-source ()
   "Source used to populate buffer."
   `((name .
@@ -221,6 +224,10 @@
            (error
             "No filename associated with buffer, file has no backup yet or filename is blacklisted"))))
     (helm-other-buffer (helm-backup-source) "*Helm Backup*")))
+
+(eval-after-load "helm-backup"
+  '(progn
+     (helm-backup-clean-repository)))
 
 (provide 'helm-backup)
 
