@@ -2,6 +2,8 @@
 
 This project aims to create a backup system for emacs using both power of git to store changes and power of helm to fetch backups easily.
 
+[Look at demonstration video](http://www.dailymotion.com/video/x18zzol_helm-backup-emacs-plugin_tech)
+
 ![alt tag](http://antham.github.io/helm-backup/pictures/screenshot.png)
 
 ## Features
