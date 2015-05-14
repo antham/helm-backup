@@ -2,9 +2,7 @@
 
 This project aims to create a backup system for emacs using both power of git to store changes and power of helm to fetch backups easily.
 
-[Look at demonstration video](http://www.dailymotion.com/video/x18zzol_helm-backup-emacs-plugin_tech)
-
-![alt tag](http://antham.github.io/helm-backup/pictures/screenshot.png)
+![](http://antham.github.io/helm-backup/pictures/helm-backup.gif)
 
 ## Features
 
@@ -34,13 +32,13 @@ or you can pull it from here and you have to add in your emacs config :
 (require 'helm-backup)
 ```
 
-If you want to store every change each time you save a file add : 
+If you want to store every change each time you save a file add :
 
 ```elisp
 (add-hook 'after-save-hook 'helm-backup-versioning)
 ```
 
-or 
+or
 
     M-x customize-variable RET after-save-hook RET [INS] helm-backup-versioning
 
