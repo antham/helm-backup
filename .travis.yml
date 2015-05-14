@@ -43,14 +43,14 @@ before_install:
   - git submodule --quiet update --init --recursive
   - git config --global user.email "noemail@noemail.com"
   - git config --global user.name "noname"
-  - curl -fsSkL https://raw.github.com/cask/cask/master/go | python;
-  - export PATH="${HOME}/.cask/bin:$PATH"
 
 install:
   - sudo add-apt-repository -y ppa:cassou/emacs &&
     sudo apt-get -qq update &&
     sudo apt-get -qq -f install &&
     sudo apt-get -qq install emacs24 emacs24-el
+  - curl -fsSkL https://raw.github.com/cask/cask/master/go | python;
+  - export PATH="${HOME}/.cask/bin:$PATH"
 
 before_script:
   - make downloads
