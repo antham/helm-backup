@@ -1,4 +1,4 @@
-# Helm-backup [![Build Status](https://travis-ci.org/antham/helm-backup.png?branch=master)](https://travis-ci.org/antham/helm-backup)
+# Helm-backup [![Build Status](https://travis-ci.org/antham/helm-backup.png?branch=master)](https://travis-ci.org/antham/helm-backup) [![MELPA](http://melpa.org/packages/helm-backup-badge.svg)](http://melpa.org/#/helm-backup)
 
 This project aims to create a backup system for emacs using both power of git to store changes and power of helm to fetch backups easily.
 
