@@ -37,7 +37,7 @@
 
 (require 'helm)
 (require 'helm-utils)
-(require 'cl)
+(require 'cl-lib)
 (require 's)
 
 (defgroup helm-backup nil
@@ -107,11 +107,11 @@
 (defun helm-backup-is-excluded-filename (filename)
   "Check if a FILENAME is excluded from backup."
   (when filename
-    (dolist (regexp helm-backup-excluded-entries)
+    (cl-dolist (regexp helm-backup-excluded-entries)
       (let ((index (string-match (concat "^" regexp "$") filename)))
         (when (and (integerp index)
                    (zerop index))
-          (return
+          (cl-return
            t))))))
 
 (defun helm-backup-version-file (filename)
@@ -133,12 +133,13 @@
                (string= (helm-backup-exec-git-command (list "ls-files" filename-for-git) t)
                         filename-for-git)
                t)
-      (mapcar* 'cons (split-string (helm-backup-exec-git-command (list "log" (format
-                                                                              "--pretty=format:%s"
-                                                                              helm-backup-list-format)
-                                                                       filename-for-git) t) "\n")
-               (split-string (helm-backup-exec-git-command (list "log" "--pretty=format:%h"
-                                                                 filename-for-git) t) "\n")))))
+      (cl-mapcar #'cons
+                 (split-string (helm-backup-exec-git-command (list "log" (format
+                                                                          "--pretty=format:%s"
+                                                                          helm-backup-list-format)
+                                                                   filename-for-git) t) "\n")
+                 (split-string (helm-backup-exec-git-command (list "log" "--pretty=format:%h"
+                                                                   filename-for-git) t) "\n")))))
 
 (defun helm-backup-fetch-backup-file (commit-id filename)
   "Retrieve content file from backup repository using COMMIT-ID and FILENAME."
