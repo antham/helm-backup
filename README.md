@@ -19,6 +19,10 @@ This project aims to create a backup system for emacs using both power of git to
 * helm (emacs library)
 * s (emacs library)
 
+For emacs prior version 24.3 :
+
+* cl-lib (emacs library)
+
 ### Install
 
 You can use melpa:
