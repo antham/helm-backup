@@ -1,12 +1,12 @@
 ;;; helm-backup.el --- Backup each file change using git
 
-;; Copyright (C) 2013 Anthony HAMON
+;; Copyright (C) 2013-2015 Anthony HAMON
 
 ;; Author: Anthony HAMON <hamon.anth@gmail.com>
 ;; URL: http://github.com/antham/helm-backup
 ;; Version: 0.2.0
-;; Package-Requires: ((helm "1.5.5") (s "1.8.0"))
-;; Keywords: backup
+;; Package-Requires: ((helm "1.5.5") (s "1.8.0") (cl-lib "0"))
+;; Keywords: convenience, files, tools, vc
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
