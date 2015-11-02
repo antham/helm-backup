@@ -6,7 +6,7 @@
 ;; URL: http://github.com/antham/helm-backup
 ;; Version: 0.2.0
 ;; Package-Requires: ((helm "1.5.5") (s "1.8.0") (cl-lib "0"))
-;; Keywords: convenience, files, tools, vc
+;; Keywords: backup, convenience, files, tools, vc
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
