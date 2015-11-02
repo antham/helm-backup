@@ -71,7 +71,7 @@
 (defun helm-backup-init-git-repository ()
   "Initialize git repository."
   (unless (file-directory-p helm-backup-path)
-    (call-process-shell-command helm-backup-git-binary nil nil nil "init" helm-backup-path)
+    (call-process helm-backup-git-binary nil nil nil "init" helm-backup-path)
     (helm-backup-exec-git-command (list "config" "--local" "user.email" "noemail@noemail.com"))
     (helm-backup-exec-git-command (list "config" "--local" "user.name" "noname"))))
 
