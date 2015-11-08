@@ -1,4 +1,4 @@
-;;; helm-backup.el --- Backup each file change using git
+;;; helm-backup.el --- Backup each file change using git -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2013-2015 Anthony HAMON
 
@@ -197,22 +197,16 @@
 
 (defun helm-backup-source ()
   "Source used to populate buffer."
-  `((name .
-          ,((lambda
-              ()
-              (format "Backup for %s" (buffer-file-name)))))
-    (candidates .
-                ,((lambda
-                    ()
-                    (helm-backup-list-file-change-time (buffer-file-name)))))
+  `((name . ,(format "Backup for %s" (buffer-file-name)))
+    (candidates . ,(helm-backup-list-file-change-time (buffer-file-name)))
     (action ("Ediff file with backup" .
-             (lambda (candidate)
-               (helm-backup-create-ediff candidate (current-buffer))))
+             ,(lambda (candidate)
+                (helm-backup-create-ediff candidate (current-buffer))))
             ("Open in new buffer" .
-             (lambda (candidate)
-               (helm-backup-open-in-new-buffer candidate (buffer-file-name))))
+             ,(lambda (candidate)
+                (helm-backup-open-in-new-buffer candidate (buffer-file-name))))
             ("Replace current buffer" .
-             (lambda (candidate)
+             ,(lambda (candidate)
                (with-helm-current-buffer
                  (helm-backup-replace-current-buffer candidate (buffer-file-name))))))))
 
