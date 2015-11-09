@@ -104,22 +104,17 @@
     (make-directory directory t)
     (copy-file filename directory t t t)))
 
-(defun helm-backup-is-excluded-filename (filename)
+(defun helm-backup-file-excluded-p (filename)
   "Check if a FILENAME is excluded from backup."
-  (when filename
-    (cl-dolist (regexp helm-backup-excluded-entries)
-      (let ((index (string-match (concat "^" regexp "$") filename)))
-        (when (and (integerp index)
-                   (zerop index))
-          (cl-return
-           t))))))
+  (cl-some (lambda (regexp) (string-match-p (concat "\\`" regexp "\\'") filename))
+           helm-backup-excluded-entries))
 
 (defun helm-backup-version-file (filename)
   "Version file using FILENAME in backup repository."
   (when (and filename
              (helm-backup-is-absolute-filename filename)
              (file-exists-p filename)
-             (not (helm-backup-is-excluded-filename filename)))
+             (not (helm-backup-file-excluded-p filename)))
     (helm-backup-init-git-repository)
     (helm-backup-copy-file-to-repository filename)
     (helm-backup-exec-git-command (list "add" (helm-backup-transform-filename-for-git filename)) t)
