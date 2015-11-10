@@ -177,37 +177,37 @@
    )
   )
 
-(ert-deftest helm-backup-is-excluded-filename-test ()
+(ert-deftest helm-backup-file-excluded-p-test ()
   (test-wrapper
    (lambda ()
      (let ((excluded-entries helm-backup-excluded-entries))
        (unwind-protect
            (progn
              ;; no patterns
-             (should (eql (helm-backup-is-excluded-filename (concat backup-folder-test "/password")) nil))
+             (should-not (helm-backup-file-excluded-p (concat backup-folder-test "/password")))
              (setq helm-backup-excluded-entries (list "/password" "/password\[0-9\]+""/root/.*" ".*\.text" ".*/pgp/.*"))
              ;; excluded file
-             (should (eql (helm-backup-is-excluded-filename "/password") t))
-             (should (eql (helm-backup-is-excluded-filename "/password1") t))
+             (should (helm-backup-file-excluded-p "/password"))
+             (should (helm-backup-file-excluded-p "/password1"))
              ;; file inside excluded folder
-             (should (eql (helm-backup-is-excluded-filename "/root/file") t))
+             (should (helm-backup-file-excluded-p "/root/file"))
              ;; file at the second level in excluded folder
-             (should (eql (helm-backup-is-excluded-filename "/root/folder/file2") t))
+             (should (helm-backup-file-excluded-p "/root/folder/file2"))
              ;; file inside global excluded folder
-             (should (eql (helm-backup-is-excluded-filename "/home/user/pgp/key") t))
-             (should (eql (helm-backup-is-excluded-filename "/home/admin/pgp/key") t))
-             (should (eql (helm-backup-is-excluded-filename "/pgp/key") t))
+             (should (helm-backup-file-excluded-p "/home/user/pgp/key"))
+             (should (helm-backup-file-excluded-p "/home/admin/pgp/key"))
+             (should (helm-backup-file-excluded-p "/pgp/key"))
              ;; excluded extension
-             (should (eql (helm-backup-is-excluded-filename "/file.text") t))
-             (should (eql (helm-backup-is-excluded-filename "/home/user/file.text") t))
-             (should (eql (helm-backup-is-excluded-filename "/home/user/file.text") t))
+             (should (helm-backup-file-excluded-p "/file.text"))
+             (should (helm-backup-file-excluded-p "/home/user/file.text"))
+             (should (helm-backup-file-excluded-p "/home/user/file.text"))
              ;; allowed file
-             (should (eql (helm-backup-is-excluded-filename "/file") nil))
-             (should (eql (helm-backup-is-excluded-filename "/password-public") nil))
+             (should-not (helm-backup-file-excluded-p "/file"))
+             (should-not (helm-backup-file-excluded-p "/password-public"))
              ;; allowed folder
-             (should (eql (helm-backup-is-excluded-filename "/home/user/file") nil))
+             (should-not (helm-backup-file-excluded-p "/home/user/file"))
              ;; allowed extension
-             (should (eql (helm-backup-is-excluded-filename "/home/user/file.el") nil))
+             (should-not (helm-backup-file-excluded-p "/home/user/file.el"))
              )
          (setq helm-backup-excluded-entries excluded-entries)
          )
