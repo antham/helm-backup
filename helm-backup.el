@@ -156,13 +156,12 @@
                                                                                              "--pretty=format:%cd"
                                                                                              commit-id)
                                                                                             t))))
-            (mode
-             (with-current-buffer (current-buffer)
-               major-mode)))
+            (mode major-mode))
         (with-current-buffer buffer
           (erase-buffer)
           (insert data)
           (funcall mode)
+          (set-buffer-modified-p nil)
           buffer)))))
 
 (defun helm-backup-clean-repository ()
