@@ -47,9 +47,10 @@
 (defcustom helm-backup-path "~/.helm-backup"
   "Backup location."
   :group 'helm-backup
+  :set (lambda (symbol path) (set-default symbol (expand-file-name path)))
   :type 'string)
 
-(defcustom helm-backup-git-binary "/usr/bin/git"
+(defcustom helm-backup-git-binary "git"
   "Git binary path."
   :group 'helm-backup
   :type 'string)
