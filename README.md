@@ -55,3 +55,7 @@ You can map `helm-backup` command to key to retrieve easily backup as follow :
 ```
 
 After that, open a file, press `C-c b` and a list of backup will be displayed if any, you can choose to see backup in new buffer (default) or override current buffer with backup.
+
+You can customize several configuration options, do : 
+
+    M-x customize-group RET helm-backup
