@@ -63,6 +63,4 @@
 (Teardown
  (setq helm-backup-path helm-backup-folder-repository-original-path))
 
-(provide 'env)
-
 ;;; env.el ends here
