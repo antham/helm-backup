@@ -14,12 +14,6 @@
 sudo: false
 
 ###
-### language
-###
-
-language: emacs-lisp
-
-###
 ### limit build attempts to defined branches
 ###
 ### notes
@@ -44,9 +38,9 @@ language: emacs-lisp
 addons:
   apt:
     sources:
-      - cassou-emacs
+      - kelleyk-emacs
     packages:
-      - emacs24
+      - emacs25
 
 before_install:
   - git submodule --quiet update --init --recursive
