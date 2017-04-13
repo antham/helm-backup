@@ -38,7 +38,7 @@ sudo: false
 addons:
   apt:
     sources:
-      - kelleyk-emacs
+      - sourceline: 'ppa:kelleyk/emacs'
     packages:
       - emacs25
 

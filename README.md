@@ -56,6 +56,32 @@ You can map `helm-backup` command to key to retrieve easily backup as follow :
 
 After that, open a file, press `C-c b` and a list of backup will be displayed if any, you can choose to see backup in new buffer (default) or override current buffer with backup.
 
-You can customize several configuration options, do : 
+You can customize several configuration options, do :
 
     M-x customize-group RET helm-backup
+
+### Tests
+
+First you need to install cask :
+
+```bash
+curl -fsSkL https://raw.github.com/cask/cask/master/go | python
+```
+
+Add cask to your path :
+
+```bash
+export PATH=$PATH:/home/YOUR_USERNAME/.cask/bin
+```
+
+Download dependencies using cask :
+
+```bash
+make downloads
+```
+
+Run tests :
+
+```
+make test
+```
