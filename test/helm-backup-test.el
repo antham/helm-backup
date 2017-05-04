@@ -182,8 +182,7 @@
 
      (let* ((commit-id (car (split-string (shell-command-to-string (combine-and-quote-strings (list "cd" backup-folder-test-repository "&&" helm-backup-git-binary "log" "-1" "--oneline"))) " ")))
             (buffer (helm-backup--create-backup-buffer commit-id "/fake-file"))
-            (data nil)
-            )
+            (data nil))
        ;; nil value
        (should (eql (helm-backup--create-backup-buffer nil nil) nil))
        ;; wrong id
@@ -193,6 +192,26 @@
        ;; existing commit and file
        (with-current-buffer buffer
          (should (equal-including-properties (buffer-substring (point-min) (point-max)) "data")))))))
+
+(ert-deftest helm-backup-remove-file-backups ()
+  (test-wrapper
+   (lambda ()
+     (call-process-shell-command helm-backup-git-binary nil nil nil "init" backup-folder-test-repository nil nil)
+     ;; version file three times and delete it from repository
+     (write-region "" nil (concat backup-folder-test "/test") nil 'nomessage)
+     (helm-backup--version-file (concat backup-folder-test "/test"))
+     (write-region "" nil (concat backup-folder-test "/fake-file") nil 'nomessage)
+     (helm-backup--version-file (concat backup-folder-test "/fake-file"))
+     (write-region "test" nil (concat backup-folder-test "/fake-file") nil 'nomessage)
+     (helm-backup--version-file (concat backup-folder-test "/fake-file"))
+     (write-region "test2" nil (concat backup-folder-test "/fake-file") nil 'nomessage)
+     (helm-backup--version-file (concat backup-folder-test "/fake-file"))
+     (should (equal-including-properties (length (split-string (helm-backup--exec-git-command (list "log" "--oneline") t) "\n")) 4))
+     (should (equal-including-properties  (file-exists-p (concat backup-folder-test-repository backup-folder-test "/fake-file")) t))
+     (helm-backup--remove-file-backups (concat backup-folder-test "/fake-file"))
+     ;; commits related to file and the file are removed from backup folder
+     (should (equal-including-properties (length (split-string (helm-backup--exec-git-command (list "log" "--oneline") t) "\n")) 1))
+     (should (equal-including-properties  (file-exists-p (concat backup-folder-test-repository backup-folder-test "/fake-file")) nil)))))
 
 (ert-deftest helm-backup-list-file-with-special-characters-in-filename-test ()
   (test-wrapper
