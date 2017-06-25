@@ -79,10 +79,8 @@
 (defun helm-backup-exec-git-command (command &optional strip-last-newline)
   "Execute a git COMMAND inside backup repository, optionally STRIP-LAST-NEWLINE."
   (when (file-directory-p (concat helm-backup-path "/.git"))
-    (let ((output (shell-command-to-string (combine-and-quote-strings (append (list "cd"
-                                                                                    helm-backup-path
-                                                                                    "&&" "git")
-                                                                              command)))))
+    (let* ((default-directory helm-backup-path)
+           (output (shell-command-to-string (combine-and-quote-strings (append '("git") command)))))
       (if strip-last-newline
           (s-chomp output)
         output))))
