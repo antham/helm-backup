@@ -4,7 +4,7 @@
 
 ;; Author: Anthony HAMON <hamon.anth@gmail.com>
 ;; URL: http://github.com/antham/helm-backup
-;; Version: 0.2.1
+;; Version: 0.2.2
 ;; Package-Requires: ((helm "1.5.5") (s "1.8.0") (cl-lib "0"))
 ;; Keywords: backup, convenience, files, tools, vc
 
