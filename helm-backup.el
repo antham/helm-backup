@@ -166,11 +166,6 @@
   "Clean repository running gc."
   (helm-backup--exec-git-command (list "gc") t))
 
-;;;###autoload
-(defun helm-backup-versioning ()
-  "Helper to add easily versionning."
-  (helm-backup-version-file (buffer-file-name)))
-
 (defun helm-backup--open-in-new-buffer (commit-id filename)
   "Open backup in new buffer using COMMIT-ID and FILENAME."
   (let ((backup-buffer (helm-backup--create-backup-buffer commit-id filename)))
@@ -201,6 +196,11 @@
              ,(lambda (candidate)
                 (with-helm-current-buffer
                   (helm-backup--replace-current-buffer candidate (buffer-file-name))))))))
+
+;;;###autoload
+(defun helm-backup-versioning ()
+  "Helper to add easily versionning."
+  (helm-backup-version-file (buffer-file-name)))
 
 ;;;###autoload
 (defun helm-backup ()
