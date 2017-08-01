@@ -202,3 +202,11 @@
        ;; existing commit and file
        (with-current-buffer buffer
          (should (equal-including-properties (buffer-substring (point-min) (point-max)) "data")))))))
+
+(ert-deftest helm-backup-list-file-with-special-characters-in-filename-test ()
+  (test-wrapper
+   (lambda ()
+     (call-process-shell-command helm-backup-git-binary nil nil nil "init" backup-folder-test-repository)
+     (write-region "" nil (concat backup-folder-test-repository "/ôëàèéü") nil 'nomessage)
+     (shell-command (combine-and-quote-strings (list "cd" backup-folder-test-repository "&&" helm-backup-git-binary "add" "ôëàèéü" "&&" helm-backup-git-binary "commit" "-m" "' '")))
+     (should (eq (safe-length (helm-backup--list-file-change-time "/ôëàèéü")) 1)))))

@@ -124,7 +124,7 @@
   "Build assoc list using commit id and message rendering format using FILENAME."
   (let ((filename-for-git (helm-backup--transform-filename-for-git filename)))
     (when (and filename
-               (string= (helm-backup--exec-git-command (list "ls-files" filename-for-git) t)
+               (string= (s-chop-suffixes '("\0") (helm-backup--exec-git-command (list "ls-files" "-z" filename-for-git) t))
                         filename-for-git) t)
       (cl-mapcar #'cons
                  (split-string (helm-backup--exec-git-command (list "log" (format
