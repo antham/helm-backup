@@ -34,13 +34,10 @@
            (,body))
        (ignore-errors
          (delete-directory backup-folder-test t))
-       (setq helm-backup-path path)
-       )
-     )
-  )
+       (setq helm-backup-path path))))
 
 (ert-deftest helm-backup-init-git-repository-test ()
-  (test-wrapper 
+  (test-wrapper
    (lambda ()
      ;; invoking command create a git repository
      (helm-backup-init-git-repository)
@@ -50,10 +47,7 @@
      ;; if directory exists nothing is done
      (make-directory backup-folder-test-repository)
      (helm-backup-init-git-repository)
-     (should (eql (file-exists-p (concat backup-folder-test-repository "/.git")) nil))
-     )
-   )
-  )
+     (should (eql (file-exists-p (concat backup-folder-test-repository "/.git")) nil)))))
 
 
 (ert-deftest helm-backup-transform-filename-for-git-test ()
@@ -64,10 +58,7 @@
      ;; relative filename
      (should (eql (helm-backup-transform-filename-for-git "relative/path") nil))
      ;; absolute filename
-     (should (equal-including-properties (helm-backup-transform-filename-for-git "/absolute/path") "absolute/path"))
-     )
-   )
-  )
+     (should (equal-including-properties (helm-backup-transform-filename-for-git "/absolute/path") "absolute/path")))))
 
 (ert-deftest helm-backup-is-absolute-filename-test ()
   (test-wrapper
@@ -77,38 +68,29 @@
      ;; relative filename
      (should (eql (helm-backup-is-absolute-filename "relative/path") nil))
      ;; absolute filename
-     (should (equal-including-properties (helm-backup-is-absolute-filename "/absolute/path") t))
-     )
-   )
-  )
+     (should (equal-including-properties (helm-backup-is-absolute-filename "/absolute/path") t)))))
 
 (ert-deftest helm-backup-exec-git-command-test ()
-  (test-wrapper 
+  (test-wrapper
    (lambda ()
      ;; we can do any git command in backup repository
      (call-process-shell-command helm-backup-git-binary nil nil nil "init" backup-folder-test-repository)
      (write-region "" nil (concat backup-folder-test-repository "/test") nil 'nomessage)
      (helm-backup-exec-git-command (list "add" "test"))
      (should (equal-including-properties (helm-backup-exec-git-command (list "status" "-s")) "A  test\n"))
-     (should (equal-including-properties (helm-backup-exec-git-command (list "status" "-s") t) "A  test"))
-     )
-   )
-  )
+     (should (equal-including-properties (helm-backup-exec-git-command (list "status" "-s") t) "A  test")))))
 
 (ert-deftest helm-backup-copy-file-to-repository-test ()
-  (test-wrapper 
+  (test-wrapper
    (lambda ()
      ;; copy a file to backup repository recreating tree
      (call-process-shell-command helm-backup-git-binary nil nil nil "init" backup-folder-test-repository)
      (write-region "" nil (concat backup-folder-test "/fake-file") nil 'nomessage)
      (helm-backup-copy-file-to-repository (concat backup-folder-test "/fake-file"))
-     (should (eql (file-exists-p (concat backup-folder-test-repository (concat backup-folder-test "/fake-file"))) t))
-     )
-   )
-  )
+     (should (eql (file-exists-p (concat backup-folder-test-repository (concat backup-folder-test "/fake-file"))) t)))))
 
 (ert-deftest helm-backup-version-file-test ()
-  (test-wrapper 
+  (test-wrapper
    (lambda ()
      (call-process-shell-command helm-backup-git-binary nil nil nil "init" backup-folder-test-repository nil nil)
      ;; version file
@@ -126,13 +108,10 @@
      (should-not (eql (file-exists-p (concat backup-folder-test-repository (concat backup-folder-test "fake-fake-fake-fake"))) t))
      ;; version crap
      (should (eql (helm-backup-version-file (concat backup-folder-test "/fake-fake-fake")) nil))
-     (should (eql (file-exists-p (concat backup-folder-test-repository (concat backup-folder-test "/fake-fake-fake-fake"))) nil))
-     )
-   )
-  )
+     (should (eql (file-exists-p (concat backup-folder-test-repository (concat backup-folder-test "/fake-fake-fake-fake"))) nil)))))
 
 (ert-deftest helm-backup-list-file-change-time-test ()
-  (test-wrapper 
+  (test-wrapper
    (lambda ()
      ;; nil value
      (should (eq (helm-backup-list-file-change-time nil) nil))
@@ -151,11 +130,7 @@
      (shell-command (combine-and-quote-strings (list "cd" backup-folder-test-repository "&&" helm-backup-git-binary "add" "fake-file" "&&" helm-backup-git-binary "commit" "-m" "' '")))
      (should (eq (safe-length (helm-backup-list-file-change-time "/fake-file")) 3))
      (dolist (row (helm-backup-list-file-change-time "/fake-file"))
-       (should (eq (string-match "[0-9a-f]+" (cdr row)) 0))
-       )
-     )
-   )
-  )
+       (should (eq (string-match "[0-9a-f]+" (cdr row)) 0))))))
 
 (ert-deftest helm-backup-fetch-backup-file-test ()
   (test-wrapper
@@ -171,11 +146,7 @@
        ;; wrong file
        (should (eql (helm-backup-fetch-backup-file commit-id "/non-existing-file") nil))
        ;; existing commit and file
-       (should (equal-including-properties (helm-backup-fetch-backup-file commit-id "/fake-file") "data"))
-       )
-     )
-   )
-  )
+       (should (equal-including-properties (helm-backup-fetch-backup-file commit-id "/fake-file") "data"))))))
 
 (ert-deftest helm-backup-file-excluded-p-test ()
   (test-wrapper
@@ -209,12 +180,7 @@
              ;; allowed extension
              (should-not (helm-backup-file-excluded-p "/home/user/file.el"))
              )
-         (setq helm-backup-excluded-entries excluded-entries)
-         )
-       )
-     )
-   )
-  )
+         (setq helm-backup-excluded-entries excluded-entries))))))
 
 (ert-deftest helm-backup-create-backup-buffer ()
   (test-wrapper
@@ -224,9 +190,9 @@
      (shell-command (combine-and-quote-strings (list "cd" backup-folder-test-repository "&&" helm-backup-git-binary "add" "fake-file" "&&" helm-backup-git-binary "commit" "-m" "' '")))
 
      (let* ((commit-id (car (split-string (shell-command-to-string (combine-and-quote-strings (list "cd" backup-folder-test-repository "&&" helm-backup-git-binary "log" "-1" "--oneline"))) " ")))
-           (buffer (helm-backup-create-backup-buffer commit-id "/fake-file"))
-           (data nil)
-           )
+            (buffer (helm-backup-create-backup-buffer commit-id "/fake-file"))
+            (data nil)
+            )
        ;; nil value
        (should (eql (helm-backup-create-backup-buffer nil nil) nil))
        ;; wrong id
@@ -235,9 +201,4 @@
        (should (eql (helm-backup-create-backup-buffer commit-id "/non-existing-file") nil))
        ;; existing commit and file
        (with-current-buffer buffer
-         (should (equal-including-properties (buffer-substring (point-min) (point-max)) "data"))
-         )
-       )
-     )
-   )
-  )
+         (should (equal-including-properties (buffer-substring (point-min) (point-max)) "data")))))))
