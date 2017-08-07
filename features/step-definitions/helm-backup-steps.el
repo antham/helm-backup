@@ -34,7 +34,7 @@
 (Then "^I should be in buffer matching regexp \"\\(.+\\)\"$" "Match REGEXP against buffer-name"
       (lambda (expected)
         (let ((message "Expected to be in buffer '%s', but was in '%s'"))
-          (string-match expected (buffer-name)))))
+          (should (string-match expected (buffer-name))))))
 
 (When "^I run \"\\(.+\\)\"$"
       "Run an emacs command"
