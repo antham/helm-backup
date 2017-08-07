@@ -38,3 +38,5 @@ Feature: Replace current buffer with backup content
     When I press "C-n"
     When I press "RET"
     And I execute the action chain
+    Then I should be in buffer matching regexp "^file$"
+    Then I should see "First change"
