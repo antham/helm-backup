@@ -35,6 +35,10 @@ sudo: false
 ### runtime initialization
 ###
 
+env:
+  matrix:
+    - EMACS=emacs25
+
 addons:
   apt:
     sources:
