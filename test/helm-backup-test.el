@@ -60,15 +60,6 @@
      ;; absolute filename
      (should (equal-including-properties (helm-backup--transform-filename-for-git "/absolute/path") "absolute/path")))))
 
-(ert-deftest helm-backup-is-absolute-filename-test ()
-  (test-wrapper
-   (lambda ()
-     ;; nil filename
-     (should (eql (helm-backup--is-absolute-filename nil) nil))
-     ;; relative filename
-     (should (eql (helm-backup--is-absolute-filename "relative/path") nil))
-     ;; absolute filename
-     (should (equal-including-properties (helm-backup--is-absolute-filename "/absolute/path") t)))))
 
 (ert-deftest helm-backup-exec-git-command-test ()
   (test-wrapper
