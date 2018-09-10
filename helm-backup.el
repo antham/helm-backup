@@ -1,10 +1,10 @@
 ;;; helm-backup.el --- Backup each file change using git -*- lexical-binding: t -*-
 
-;; Copyright (C) 2013-2017 Anthony HAMON
+;; Copyright (C) 2013-2018 Anthony HAMON
 
 ;; Author: Anthony HAMON <hamon.anth@gmail.com>
 ;; URL: http://github.com/antham/helm-backup
-;; Version: 1.0.0
+;; Version: 1.1.0
 ;; Package-Requires: ((helm "1.5.5") (s "1.8.0") (cl-lib "0"))
 ;; Keywords: backup, convenience, files, tools, vc
 
@@ -97,6 +97,12 @@
     (make-directory directory t)
     (copy-file filename directory t t t)))
 
+(defun helm-backup--remove-file (filename)
+  "Remove FILENAME from repository."
+  (let ((f (concat helm-backup-path filename)))
+    (when (file-exists-p f)
+      (delete-file f))))
+
 (defun helm-backup--file-excluded-p (filename)
   "Check if a FILENAME is excluded from backup."
   (cl-some (lambda (regexp) (string-match-p (concat "\\`" regexp "\\'") filename))
@@ -156,6 +162,25 @@
           (set-buffer-modified-p nil)
           buffer)))))
 
+(defun helm-backup--remove-file-history (filename)
+  "Remove commits history for FILENAME."
+  (helm-backup--exec-git-command (list "filter-branch"
+                                        "--force"
+                                        "--index-filter"
+                                        "'"
+                                        "git"
+                                        "rm"
+                                        "--cached"
+                                        "--ignore-unmatch"
+                                        (s-chop-prefix "/" filename)
+                                        "'"
+                                        "--prune-empty"
+                                        "--tag-name-filter"
+                                        "cat"
+                                        "--"
+                                        "--all"))t)
+
+
 (defun helm-backup--clean-repository ()
   "Clean repository running gc."
   (helm-backup--exec-git-command (list "gc") t))
@@ -176,6 +201,11 @@
     (ediff-buffers (buffer-name backup-buffer)
                    (buffer-name buffer))))
 
+(defun helm-backup--remove-file-backups (filename)
+  "Remove all history associated with FILENAME."
+  (helm-backup--remove-file-history filename)
+  (helm-backup--remove-file filename))
+
 (defun helm-backup--source ()
   "Source used to populate buffer."
   `((name . ,(format "Backup for %s" (buffer-file-name)))
@@ -193,8 +223,14 @@
 
 ;;;###autoload
 (defun helm-backup-versioning ()
-  "Helper to add easily versionning."
+  "Helper to add easily versioning."
   (helm-backup--version-file (buffer-file-name)))
+
+;;;###autoload
+(defun helm-backup-remove-file-backups ()
+  "Remove all history of a file and the file itself from backup directory."
+  (interactive)
+  (helm-backup--remove-file-from-repository (buffer-file-name)))
 
 ;;;###autoload
 (defun helm-backup ()

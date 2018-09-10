@@ -60,6 +60,8 @@ You can customize several configuration options, do :
 
     M-x customize-group RET helm-backup
 
+It's possible to remove all backups of a file by calling, from the buffer where your file is open, ```helm-backup-remove-file-backups```.
+
 ### Tests
 
 First you need to install cask :
