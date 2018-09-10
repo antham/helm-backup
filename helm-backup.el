@@ -223,7 +223,7 @@
 
 ;;;###autoload
 (defun helm-backup-versioning ()
-  "Helper to add easily versionning."
+  "Helper to add easily versioning."
   (helm-backup--version-file (buffer-file-name)))
 
 ;;;###autoload
