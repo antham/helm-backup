@@ -230,7 +230,7 @@
 (defun helm-backup-remove-file-backups ()
   "Remove all history of a file and the file itself from backup directory."
   (interactive)
-  (helm-backup--remove-file-from-repository (buffer-file-name)))
+  (helm-backup--remove-file-backups (buffer-file-name)))
 
 ;;;###autoload
 (defun helm-backup ()
